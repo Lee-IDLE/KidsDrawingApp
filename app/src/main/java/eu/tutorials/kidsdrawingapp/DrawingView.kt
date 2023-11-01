@@ -20,7 +20,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
 
     private fun setUpDrawing(){
         mDrawPaint = Paint()
-        mDrawPath = CustomPath(color, mBrsuhSize)
+        mDrawPath = CustomPath(color, mBrushSize)
 
         if(mDrawPaint != null){
             mDrawPaint!!.color = color

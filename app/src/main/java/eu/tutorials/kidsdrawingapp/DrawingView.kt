@@ -15,6 +15,8 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
     private var color = Color.BLACK
     private var canvas: Canvas? = null
 
+    private var mPaths = ArrayList<CustomPath>()
+
     init{
         setUpDrawing()
     }
@@ -48,6 +50,13 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         // 특정한 비트맵을 상단 왼쪽을 기준으로 위치정보(x,y)에 명시된 곳에 현재 행렬에
         // 의해 변환된 지
         canvas?.drawBitmap(mCanvasBitmap!!, 0f, 0f, mCanvasPaint)
+
+        for(path in mPaths){
+            mDrawPaint!!.strokeWidth = path.brushThickness
+            mDrawPaint!!.color = path.color
+            canvas?.drawPath(path, mDrawPaint!!)
+        }
+
         if(mDrawPath != null && mDrawPaint != null){
             mDrawPaint!!.color = mDrawPath!!.color
             mDrawPaint!!.strokeWidth = mDrawPath!!.brushThickness
@@ -73,6 +82,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
                     mDrawPath!!.lineTo(touchX, touchY)
             }
             MotionEvent.ACTION_UP ->{
+                mPaths.add(mDrawPath!!, )
                 mDrawPath = CustomPath(color, mBrushSize)
             }
             else -> return false

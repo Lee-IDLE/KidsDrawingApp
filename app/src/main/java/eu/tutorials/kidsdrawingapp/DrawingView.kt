@@ -3,8 +3,10 @@ package eu.tutorials.kidsdrawingapp
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import java.lang.reflect.TypeVariable
 
 class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mDrawPath: CustomPath? = null
@@ -33,7 +35,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         }
 
         mCanvasPaint = Paint(Paint.DITHER_FLAG)
-        mBrushSize = 20.toFloat()
+        //mBrushSize = 20.toFloat()
 
     }
 
@@ -93,6 +95,13 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         invalidate()
 
         return true
+    }
+
+    public fun setSizeForBrush(newSize : Float){
+        // 화면에 크기(resources.displayMetrics)에 비례하게 새로운 크기(newSize)가 가능하다면 설정한다.
+        mBrushSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, newSize, resources.displayMetrics)
+        mDrawPaint!!.strokeWidth = mBrushSize
     }
 
     // android.Path

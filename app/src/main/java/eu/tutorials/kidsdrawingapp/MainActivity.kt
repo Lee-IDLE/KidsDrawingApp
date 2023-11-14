@@ -13,13 +13,13 @@ import androidx.core.view.get
 class MainActivity : AppCompatActivity() {
     private var drawingView: DrawingView? = null
     private var mImageButtonCurrentPaint: ImageButton? = null
+    private var mImageButtonGallery: ImageButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         drawingView = findViewById(R.id.drawingView)
         drawingView?.setSizeForBrush(20.toFloat())
-
 
         val linearLayoutPaintColors = findViewById<LinearLayout>(R.id.liPaintColors)
 
@@ -31,6 +31,11 @@ class MainActivity : AppCompatActivity() {
         val ibBrush : ImageButton = findViewById<ImageButton>(R.id.ibBrush)
         ibBrush.setOnClickListener{
             showBrushSizeChooserDialog()
+        }
+
+        mImageButtonGallery = findViewById(R.id.ibGallery)
+        mImageButtonGallery?.setOnClickListener{
+            Toast.makeText(this, "ImageButton", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -45,7 +45,7 @@
        app:layout_constraintTop_toBottomOf="@id/flDrawingViewContainer"
        app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintBottom_toTopOf="@id/ibBrush"
+       app:layout_constraintBottom_toTopOf="@id/liActionButtons"
        >
 
       <ImageButton
@@ -120,18 +120,39 @@
 
    </LinearLayout>
 
-
-   <ImageButton
-       android:id="@+id/ibBrush"
-       android:layout_width="50dp"
-       android:layout_height="50dp"
-       android:layout_margin="5dp"
-       android:src="@drawable/small"
-       android:scaleType="fitXY"
-       android:contentDescription="Chooser Brush Size Button"
-       app:layout_constraintBottom_toBottomOf="parent"
+   <LinearLayout
+       android:id="@+id/liActionButtons"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:gravity="center"
+       android:orientation="horizontal"
+       app:layout_constraintBottom_toTopOf="@id/liPaintColors"
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintRight_toRightOf="parent"
-       />
+       app:layout_constraintTop_toBottomOf="parent"
+       >
+
+      <ImageButton
+          android:id="@+id/ibGallery"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_margin="5dp"
+          android:src="@drawable/sun"
+          android:scaleType="fitXY"
+          />
+
+      <ImageButton
+          android:id="@+id/ibBrush"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_margin="5dp"
+          android:src="@drawable/small"
+          android:scaleType="fitXY"
+          android:contentDescription="Chooser Brush Size Button"
+          />
+
+   </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

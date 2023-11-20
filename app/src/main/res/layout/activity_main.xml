@@ -142,6 +142,24 @@
           />
 
       <ImageButton
+          android:id="@+id/ibUndo"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_margin="5dp"
+          android:src="@drawable/undoimage"
+          android:scaleType="fitXY"
+          />
+
+      <ImageButton
+          android:id="@+id/ibGetBack"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_margin="5dp"
+          android:src="@drawable/stake"
+          android:scaleType="fitXY"
+          />
+
+      <ImageButton
           android:id="@+id/ibBrush"
           android:layout_width="50dp"
           android:layout_height="50dp"

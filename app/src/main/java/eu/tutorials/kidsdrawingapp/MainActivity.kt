@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private var drawingView: DrawingView? = null
     private var mImageButtonCurrentPaint: ImageButton? = null
     private var mImageButtonGallery: ImageButton? = null
+    private var mImageButtonUndo: ImageButton? = null
+    private var mImageButtonGetBack: ImageButton? = null
 
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -78,7 +80,15 @@ class MainActivity : AppCompatActivity() {
             requestStoragePermission()
         }
 
+        mImageButtonUndo = findViewById<ImageButton>(R.id.ibUndo)
+        mImageButtonUndo?.setOnClickListener{
+            drawingView?.onClickUndo()
+        }
 
+        mImageButtonGetBack = findViewById<ImageButton>(R.id.ibGetBack)
+        mImageButtonGetBack?.setOnClickListener {
+            drawingView?.onClickGetBack()
+        }
     }
 
     private fun showRationaleDialog(title: String, message: String) {

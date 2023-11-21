@@ -146,7 +146,7 @@
           android:layout_width="50dp"
           android:layout_height="50dp"
           android:layout_margin="5dp"
-          android:src="@drawable/undoimage"
+          android:src="@drawable/undoImage"
           android:scaleType="fitXY"
           />
 
@@ -167,6 +167,13 @@
           android:src="@drawable/small"
           android:scaleType="fitXY"
           android:contentDescription="Chooser Brush Size Button"
+          />
+      <ImageButton
+          android:id="@+id/ibSave"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_margin="5dp"
+          android:scaleType="fitXY"
           />
 
    </LinearLayout>

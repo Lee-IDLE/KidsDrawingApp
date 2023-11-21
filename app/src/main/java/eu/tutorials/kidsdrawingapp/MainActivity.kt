@@ -3,6 +3,10 @@ package eu.tutorials.kidsdrawingapp
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var mImageButtonGallery: ImageButton? = null
     private var mImageButtonUndo: ImageButton? = null
     private var mImageButtonGetBack: ImageButton? = null
+    private var mImageButtonSave: ImageButton? = null
 
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -89,6 +94,11 @@ class MainActivity : AppCompatActivity() {
         mImageButtonGetBack?.setOnClickListener {
             drawingView?.onClickGetBack()
         }
+
+        mImageButtonSave = findViewById<ImageButton>(R.id.ibSave)
+        mImageButtonSave?.setOnClickListener {
+
+        }
     }
 
     private fun showRationaleDialog(title: String, message: String) {
@@ -153,5 +163,21 @@ class MainActivity : AppCompatActivity() {
                 // TODO - Add wiring external storage permission
             ))
         }
+    }
+
+    private fun getBitmapFromView(view: View) : Bitmap{
+        val returnedBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(returnedBitmap)
+        val bgDrawable = view.background
+
+        if(bgDrawable != null){
+            bgDrawable.draw(canvas)
+        }else{
+            canvas.drawColor(Color.WHITE)
+        }
+
+        view.draw(canvas)
+
+        return returnedBitmap
     }
 }

@@ -3,6 +3,7 @@ package eu.tutorials.kidsdrawingapp
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,6 +23,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+
 
 class MainActivity : AppCompatActivity() {
     private var drawingView: DrawingView? = null
@@ -49,14 +59,19 @@ class MainActivity : AppCompatActivity() {
 
                 if(isGranted){
                     if(permissionName == Manifest.permission.READ_EXTERNAL_STORAGE){
-                        Toast.makeText(this, "Permission granted for storage", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Permission granted for read storage", Toast.LENGTH_LONG).show()
+
+                        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        openGalleryLauncher.launch(pickIntent)
+                    }else if(permissionName == Manifest.permission.WRITE_EXTERNAL_STORAGE){
+                        Toast.makeText(this, "Permission granted for write storage", Toast.LENGTH_LONG).show()
 
                         val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                         openGalleryLauncher.launch(pickIntent)
                     }
                 }else{
                     if(permissionName == Manifest.permission.READ_EXTERNAL_STORAGE)
-                        Toast.makeText(this, "Permission denied for location", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Permission denied for read storage", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -97,7 +112,13 @@ class MainActivity : AppCompatActivity() {
 
         mImageButtonSave = findViewById<ImageButton>(R.id.ibSave)
         mImageButtonSave?.setOnClickListener {
-
+            if(isReadStorageAllowed()){
+                lifecycleScope.launch{
+                    val fl = findViewById<FrameLayout>(R.id.flDrawingViewContainer)
+                    var myBitmap = getBitmapFromView(fl)
+                    saveBitmapFile(myBitmap)
+                }
+            }
         }
     }
 
@@ -152,6 +173,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isReadStorageAllowed(): Boolean{
+        val result = ContextCompat.checkSelfPermission(
+            applicationContext,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+
+        return result == PackageManager.PERMISSION_GRANTED
+    }
     private fun requestStoragePermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(
             this, Manifest.permission.READ_EXTERNAL_STORAGE)){
@@ -159,8 +188,8 @@ class MainActivity : AppCompatActivity() {
                     "needs to Access Your External Storage")
         }else{
             permissionResultLauncher.launch(arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE
-                // TODO - Add wiring external storage permission
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             ))
         }
     }
@@ -179,5 +208,38 @@ class MainActivity : AppCompatActivity() {
         view.draw(canvas)
 
         return returnedBitmap
+    }
+
+    private suspend fun saveBitmapFile(mBitmap: Bitmap?) : String{
+        var result = "";
+        withContext(Dispatchers.IO){
+            if(mBitmap != null){
+                try{
+                    val bytes = ByteArrayOutputStream()
+                    mBitmap.compress(Bitmap.CompressFormat.PNG, 90, bytes)
+
+                    val f = File("${externalCacheDir?.absoluteFile.toString()}${File.separator}" +
+                            "KidsDrawingApp_${System.currentTimeMillis()/1000}.png")
+                    val fo = FileOutputStream(f)
+                    fo.write(bytes.toByteArray())
+                    fo.close()
+
+                    result = f.absolutePath
+
+                    runOnUiThread{
+                        if(result.isNotEmpty()){
+                            Toast.makeText(
+                                applicationContext,
+                                "File saved successfully: $result",
+                                Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }catch (ex: Exception){
+                    result = ""
+                    ex.printStackTrace()
+                }
+            }
+        }
+        return result
     }
 }

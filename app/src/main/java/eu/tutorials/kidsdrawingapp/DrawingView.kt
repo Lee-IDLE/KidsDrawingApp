@@ -62,7 +62,7 @@ class DrawingView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         canvas = Canvas(mCanvasBitmap!!)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         // 특정한 비트맵을 상단 왼쪽을 기준으로 위치정보(x,y)에 명시된 곳에 현재 행렬에
         // 의해 변환된 지

@@ -146,7 +146,6 @@
           android:layout_width="50dp"
           android:layout_height="50dp"
           android:layout_margin="5dp"
-          android:src="@drawable/undoImage"
           android:scaleType="fitXY"
           />
 

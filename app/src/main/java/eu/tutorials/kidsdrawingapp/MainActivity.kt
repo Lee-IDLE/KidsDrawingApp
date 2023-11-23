@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.media.Image
+import android.media.MediaScannerConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private var mImageButtonUndo: ImageButton? = null
     private var mImageButtonGetBack: ImageButton? = null
     private var mImageButtonSave: ImageButton? = null
+    private var customProgressDialog: Dialog? = null
 
     val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -113,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         mImageButtonSave = findViewById<ImageButton>(R.id.ibSave)
         mImageButtonSave?.setOnClickListener {
             if(isReadStorageAllowed()){
+                showProgressDialog()
                 lifecycleScope.launch{
                     val fl = findViewById<FrameLayout>(R.id.flDrawingViewContainer)
                     var myBitmap = getBitmapFromView(fl)
@@ -227,11 +230,14 @@ class MainActivity : AppCompatActivity() {
                     result = f.absolutePath
 
                     runOnUiThread{
+                        cancelProgressDialog()
                         if(result.isNotEmpty()){
                             Toast.makeText(
                                 applicationContext,
                                 "File saved successfully: $result",
                                 Toast.LENGTH_LONG).show()
+
+                            shareImage(result)
                         }
                     }
                 }catch (ex: Exception){
@@ -242,4 +248,34 @@ class MainActivity : AppCompatActivity() {
         }
         return result
     }
+
+    private fun showProgressDialog(){
+        customProgressDialog = Dialog(this@MainActivity)
+
+        customProgressDialog?.setContentView(R.layout.dialog_custom_progress)
+
+        customProgressDialog?.show()
+    }
+
+    private fun cancelProgressDialog(){
+        if(customProgressDialog != null){
+            customProgressDialog?.dismiss()
+            customProgressDialog = null
+        }
+    }
+
+    private fun shareImage(result: String){
+        MediaScannerConnection.scanFile(this@MainActivity, arrayOf(result), null){
+            path, uri ->
+            val shareIntent = Intent()
+            // ACTION_SEND 아이템들을 보내는 기능
+            shareIntent.action = Intent.ACTION_SEND
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            shareIntent.type = "image/png"
+
+            startActivity(Intent.createChooser(shareIntent, "Share"))
+        }
+
+    }
+
 }

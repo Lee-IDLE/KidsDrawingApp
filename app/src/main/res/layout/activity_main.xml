@@ -24,7 +24,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:scaleType="centerCrop"
-          android:src="@drawable/pizza"
+          tools:src="@drawable/pizza"
           />
       <!-- centerCrop: 중앙만 사용하고 남는곳은 자르기-->
       
